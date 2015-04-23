@@ -30,15 +30,29 @@ class Graph:
 	
 	'''
 	class fields:
-		vertices - a list of the vertices in the graph
+		vertices - a dictionary containing the vertices in the graph
 	'''
-	def __init__(self, vertices = [], adjacency = []):
+	def __init__(self, vertices = {}, adjacency = []):
 		self.vertices = vertices
-		self.adj = adjacency
+		if adjacency == []:
+			adjacency = self.__generate_adjacency()
+		else:
+			self.adj = adjacency
 	
 	def __generate_adjacency(self):
 		pass
 		
+	
+	
+	
+	
+
+class NetworkFlow:
+	
+	def __init__(self, g, source, sink):
+		self.graph = g
+		self.s = source
+		self.t = sink
 	
 	
 	
