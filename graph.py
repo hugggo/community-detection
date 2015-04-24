@@ -41,17 +41,28 @@ class Graph:
 				self.vertices[vert] = ind
 				ind = ind + 1
 			
-			self.adj = self.__generate_adjacency()
+			# self.adj = self.__generate_adjacency()
 		else:
 			self.vertices = vertices
 			
-			if adjacency == []:
-				self.adj = self.__generate_adjacency()
-			else:
-				self.adj = adjacency
+			# if adjacency == []:
+			# 	self.adj = self.__generate_adjacency()
+			# else:
+			# 	self.adj = adjacency
+		
+		self.adj = self.__generate_adjacency()
 	
 	def __generate_adjacency(self):
-		pass
+		adjacency = [[0 for i in range(len(self.vertices))] for j in range(len(self.vertices))]
+		
+		for vert in self.vertices.keys():
+			for (neighbor,dist) in vert.neighbors.items():
+				adjacency[self.vertices[vert]][self.vertices[neighbor]] = dist
+		
+		return adjacency
+	
+	
+		
 		
 	
 	

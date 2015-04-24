@@ -1,4 +1,5 @@
 import graph
+from graph import *
 import copy
 
 # Computes the density of a subgraph given by a list of vertices
@@ -13,28 +14,39 @@ def max_density_subgraph(g):
 def prune_dense_graph(g):
 	return []
 
-# returns contracted graph of edge between vert1 and vert2
+# Returns graph with vert1 and vert2 contracted into a single vertex
 def contract(g, vert1, vert2) :
-	newgraph = g.vertices
-	del newgraph[vert1]
-	del newgraph[vert2]
-	newvertex = copy.deepcopy(vert2)
+	
+	# Create the new contracted vertex
+	new_vertex = Vertex(vert2.neighbors)
 	for (vert, weight) in vert1.neighbors.items():
-		if vert in newvertex.neighbors:
-			newvertex.neighbors.update(vert, weight + newvertex.neighbors[vert])
+		if vert in new_vertex.neighbors:
+			new_vertex.neighbors[vert] = weight + new_vertex.neighbors[vert]
 		else:
-			newvertex.add_neighbor(vert,weight)
-	newgraph[newvertex] = 0
-	return Graph(newgraph)
+			new_vertex.add_neighbor(vert,weight)
+	if vert1 in new_vertex.neighbors:
+		del new_vertex.neighbors[vert1]
+	if vert2 in new_vertex.neighbors:
+		del new_vertex.neighbors[vert2]
+	
+	
+	new_verts = dict.copy(g.vertices)
+	del new_verts[vert1]
+	del new_verts[vert2]
+	new_verts[new_vertex] = 0
 
-def connectedness (vertlist, vert1):
+	
+	return Graph(new_verts.keys())
+	
+
+def connectedness(vertlist, vert1):
 	sum = 0
 	for vert in vertlist.neighbors.keys():
 		if vert1 in vert.neighbors:
 			sum = sum + vert.neighbors[vert1]
 	return sum
 
-def compliment (g, A):
+def complement (g, A):
 	returnlist = {}
 	for vert in g.vertices:
 		if not(vert in A):
@@ -55,7 +67,7 @@ def min_cut_phase (g, a):
 			vert1 = x
 		if len(A) == len(g.vertices) - 1:
 			vert2 = x
-			cutphase = (A, compliment (g, A))
+			cutphase = (A, complement(g, A))
 		A[x] = 0
 	newgraph = contract(g, vert1, vert2)
 	return (cutphase, newgraph)
