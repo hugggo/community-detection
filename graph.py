@@ -42,7 +42,7 @@ class Graph:
 				ind = ind + 1
 			
 			self.adj = self.__generate_adjacency()
-		else
+		else:
 			self.vertices = vertices
 			
 			if adjacency == []:
