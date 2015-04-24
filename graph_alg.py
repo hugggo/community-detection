@@ -60,6 +60,23 @@ def min_cut_phase (g, a):
 	newgraph = contract(g, vert1, vert2)
 	return (cutphase, newgraph)
 
+def weight_cut (g, cutphase):
+	(A, Aprime) = cutphase
+	sum = 0
+	for x in A:
+		sum = sum + connectedness(x, Aprime)
+	return sum
+
+def min_cut (g, a):
+	A = a
+	while len(g.vertices) > 1:
+		(cutphase, newgraph) = min_cut_phase(g, a)
+		mincut = None
+		minval = float("inf")
+		if weight_cut(cutphase) < minval:
+			mincut = cutphase
+			minval = weight_cut(cutphase)
+	return mincut
 
 
 	
