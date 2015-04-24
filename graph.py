@@ -30,14 +30,25 @@ class Graph:
 	
 	'''
 	class fields:
-		vertices - a dictionary containing the vertices in the graph
+		vertices - a dictionary containing the vertices in the graph and their corresponding indices in the adjacency matrix
 	'''
 	def __init__(self, vertices = {}, adjacency = []):
-		self.vertices = vertices
-		if adjacency == []:
-			adjacency = self.__generate_adjacency()
-		else:
-			self.adj = adjacency
+		if type(vertices) is list:
+			self.vertices = {}
+			ind = 0
+			
+			for vert in vertices:
+				self.vertices[vert] = ind
+				ind = ind + 1
+			
+			self.adj = self.__generate_adjacency()
+		else
+			self.vertices = vertices
+			
+			if adjacency == []:
+				self.adj = self.__generate_adjacency()
+			else:
+				self.adj = adjacency
 	
 	def __generate_adjacency(self):
 		pass
