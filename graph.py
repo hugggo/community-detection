@@ -32,6 +32,8 @@ class Vertex:
 		else:
 			self.add_neighbor(neighbor, weight)
 	
+	def is_neighbor(self, neighbor):
+		return neighbor in self.neighbors
 
 
 class Graph:
