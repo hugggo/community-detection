@@ -31,6 +31,10 @@ class Vertex:
                         self.neighbors[neighbor] += weight
                 else:
                         self.add_neighbor(neighbor,weight)
+        
+        # Returns true if there is an edge between self and neighbor                
+        def is_neighbor(self, neighbor):
+                return neighbor in self.neighbors
 
 
 class Graph:
