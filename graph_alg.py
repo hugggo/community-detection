@@ -20,24 +20,46 @@ def contract(g, vert1, vert2) :
 	# Create the new contracted vertex
 	new_vertex = Vertex(vert2.neighbors)
 	for (vert, weight) in vert1.neighbors.items():
+		# add weights of edges together
 		if vert in new_vertex.neighbors:
 			new_vertex.neighbors[vert] = weight + new_vertex.neighbors[vert]
 		else:
 			new_vertex.add_neighbor(vert,weight)
+	
+	# remove the self-edge
 	if vert1 in new_vertex.neighbors:
 		del new_vertex.neighbors[vert1]
 	if vert2 in new_vertex.neighbors:
 		del new_vertex.neighbors[vert2]
 	
+	# add the contracted vertices to the contracted list
+	new_vertex.add_aux_info('contracted', [])
+	if 'contracted' in vert1.aux:
+		new_vertex.aux['contracted'] = new_vertex.aux['contracted'] + vert1.aux['contracted']
+	else:
+		new_vertex.aux['contracted'].append(vert1)
+	if 'contracted' in vert2.aux:
+		new_vertex.aux['contracted'] = new_vertex.aux['contracted'] + vert2.aux['contracted']
+	else:
+		new_vertex.aux['contracted'].append(vert2)
 	
+	# remove the two original vertices from the old vertex list
 	new_verts = dict.copy(g.vertices)
 	del new_verts[vert1]
 	del new_verts[vert2]
+	
+	# make incoming edges point to new vertex
+	for vert in new_verts:
+		if vert1 in vert.neighbors:
+			
+			
+	
+	# add the new vertex
 	new_verts[new_vertex] = 0
-
+	
 	
 	return Graph(new_verts.keys())
-	
+
 
 def connectedness(vertlist, vert1):
 	sum = 0
