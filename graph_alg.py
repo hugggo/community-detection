@@ -1,6 +1,5 @@
 import graph
 from graph import *
-import copy
 
 # Computes the density of a subgraph given by a list of vertices
 def density(g, verts):
@@ -18,28 +17,29 @@ def prune_dense_graph(g):
 def contract(g, vert1, vert2) :
 	
 	# Create the new contracted vertex
-	new_vertex = Vertex(vert2.neighbors)
-	for (vert, weight) in vert1.neighbors.items():
+	new_vertex = Vertex(vert1.neighbors)
+	for (vert, weight) in vert2.neighbors.items():
+		new_vertex.inc_weight(vert, weight)
 		# add weights of edges together
-		if vert in new_vertex.neighbors:
-			new_vertex.neighbors[vert] = weight + new_vertex.neighbors[vert]
-		else:
-			new_vertex.add_neighbor(vert,weight)
+		# if vert in new_vertex.neighbors:
+		# 	new_vertex.neighbors[vert] = weight + new_vertex.neighbors[vert]
+		# else:
+		# 	new_vertex.add_neighbor(vert,weight)
 	
 	# remove the self-edge
 	if vert1 in new_vertex.neighbors:
-		del new_vertex.neighbors[vert1]
+		new_vertex.del_neighbor(vert1)
 	if vert2 in new_vertex.neighbors:
-		del new_vertex.neighbors[vert2]
+		new_vertex.del_neighbor(vert2)
 	
 	# add the contracted vertices to the contracted list
 	new_vertex.add_aux_info('contracted', [])
 	if 'contracted' in vert1.aux:
-		new_vertex.aux['contracted'] = new_vertex.aux['contracted'] + vert1.aux['contracted']
+		new_vertex.aux['contracted'] += vert1.aux['contracted']
 	else:
 		new_vertex.aux['contracted'].append(vert1)
 	if 'contracted' in vert2.aux:
-		new_vertex.aux['contracted'] = new_vertex.aux['contracted'] + vert2.aux['contracted']
+		new_vertex.aux['contracted'] += vert2.aux['contracted']
 	else:
 		new_vertex.aux['contracted'].append(vert2)
 	
@@ -51,12 +51,14 @@ def contract(g, vert1, vert2) :
 	# make incoming edges point to new vertex
 	for vert in new_verts:
 		if vert1 in vert.neighbors:
-			
-			
+			vert.inc_weight(new_vertex, vert.neighbors[vert1])
+			vert.del_neighbor(vert1)
+		if vert2 in vert.neighbors:
+			vert.inc_weight(new_vertex, vert.neighbors[vert2])
+			vert.del_neighbor(vert2)
 	
 	# add the new vertex
 	new_verts[new_vertex] = 0
-	
 	
 	return Graph(new_verts.keys())
 

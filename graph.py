@@ -15,7 +15,7 @@ class Vertex:
 	# Adds an edge from self to neighbor to self's edge list
 	def add_neighbor(self, neighbor, weight=1):
 		self.neighbors[neighbor] = weight
-		self.degree = self.degree + 1
+		self.degree += 1
 	
 	# Updates auxiliary information for field
 	def add_aux_info(self, field, info):
@@ -25,12 +25,13 @@ class Vertex:
 	def del_neighbor(self, neighbor):
 		del self.neighbors[neighbor]
 		
-        # Increases weight between self and neighbor
-        def inc_weight(self, neighbor, weight=1):
-                if neighbor in self.neighbors:
-                        self.neighbors[neighbor] += weight
-                else:
-                        self.add_neighbor(neighbor,weight)
+	# Increases weight between self and neighbor
+	def inc_weight(self, neighbor, weight=1):
+		if neighbor in self.neighbors:
+			self.neighbors[neighbor] += weight
+		else:
+			self.add_neighbor(neighbor, weight)
+	
 
 
 class Graph:
@@ -46,7 +47,7 @@ class Graph:
 			
 			for vert in vertices:
 				self.vertices[vert] = ind
-				ind = ind + 1
+				ind += 1
 			
 			# self.adj = self.__generate_adjacency()
 		else:
