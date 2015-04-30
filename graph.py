@@ -24,6 +24,13 @@ class Vertex:
 	# Deletes the edge from self to neighbor in self's edge list
 	def del_neighbor(self, neighbor):
 		del self.neighbors[neighbor]
+		
+        # Increases weight between self and neighbor
+        def inc_weight(self, neighbor, weight=1):
+                if neighbor in self.neighbors:
+                        self.neighbors[neighbor] += weight
+                else:
+                        self.add_neighbor(neighbor,weight)
 
 
 class Graph:
