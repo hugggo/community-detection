@@ -27,9 +27,9 @@ def contract(g, vert1, vert2) :
 		# 	new_vertex.add_neighbor(vert,weight)
 	
 	# remove the self-edge
-	if vert1 in new_vertex.neighbors:
+	if new_vertex.is_neighbor(vert1):
 		new_vertex.del_neighbor(vert1)
-	if vert2 in new_vertex.neighbors:
+	if new_vertex.is_neighbor(vert2):
 		new_vertex.del_neighbor(vert2)
 	
 	# add the contracted vertices to the contracted list
@@ -50,10 +50,10 @@ def contract(g, vert1, vert2) :
 	
 	# make incoming edges point to new vertex
 	for vert in new_verts:
-		if vert1 in vert.neighbors:
+		if vert.is_neighbor(vert1):
 			vert.inc_weight(new_vertex, vert.neighbors[vert1])
 			vert.del_neighbor(vert1)
-		if vert2 in vert.neighbors:
+		if vert.is_neighbor(vert2):
 			vert.inc_weight(new_vertex, vert.neighbors[vert2])
 			vert.del_neighbor(vert2)
 	
