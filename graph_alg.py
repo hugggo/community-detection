@@ -16,8 +16,13 @@ def prune_dense_graph(g):
 	return []
 
 
-def min_cut_dir(g):
-	pass
+def construct_network(g, guess):
+	s = Vertex({})
+	t = Vertex({})
+	
+	# for vert in g.vertices.keys():
+		# s.add_neighbor(vert, )
+		# vert.add_neighbor()
 	
 
 
@@ -97,7 +102,6 @@ def complement(g, A):
 
 # returns the vertex in A complement that is most tightly connected to A
 def most_tightly_connected(g, A):
-	
 	max_vert = (None, 0)
 	
 	for x in g.complement(A):

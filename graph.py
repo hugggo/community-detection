@@ -61,6 +61,9 @@ class Graph:
 			# 	self.adj = adjacency
 		
 		self.adj = self.__generate_adjacency()
+		
+		self.num_verts = len(self.vertices)
+		self.num_edges = sum(map(lambda x: len(x.neighbors), self.vertices.keys()))
 	
 	def __generate_adjacency(self):
 		adjacency = [[0 for i in range(len(self.vertices))] for j in range(len(self.vertices))]
