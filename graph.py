@@ -71,6 +71,16 @@ class Graph:
 		
 		return adjacency
 	
+	# returns the complement of the set of vertices A in the graph g's vertices
+	def complement(self, A):
+		
+		comp = set()
+		
+		for vert in self.vertices:
+			if vert not in A:
+				comp.add(vert)
+		
+		return comp
 	
 		
 		
@@ -85,7 +95,70 @@ class NetworkFlow:
 		self.graph = g
 		self.s = source
 		self.t = sink
+		self.flow = [[0 for i in range(len(g.vertices))] for j in range(len(g.vertices))]
+	
+	# Finds an augmenting path
+	def aug_path(self, cur, path):
+		
+		if cur == self.t:
+			return path
+		
+		for vert in self.graph.vertices.keys():
+			
+			if vert not in path and self.graph.adj[self.graph.vertices[cur]][self.graph.vertices[vert]] > self.flow[self.graph.vertices[cur]][self.graph.vertices[vert]]:
+				result = self.aug_path(vert, path + [vert])
+				
+				if result != None:
+					return result
+
+		# for (vert, cap) in cur.neighbors.items():
+			
+		# 	if vert not in path and cap > self.flow[self.graph.vertices[cur]][self.graph.vertices[vert]]:
+		# 		result = self.aug_path(vert, path + [vert])
+				
+		# 		if result != None:
+		# 			return result
 	
 	
+	# finds the maximum flow and a minimum cut using Ford-Fulkerson
+	def ford_fulkerson(self):
+		
+		path = self.aug_path(self.s, [self.s])
+		
+		while path != None:
+			
+			residuals = []
+			
+			for i in range(len(path)-1):
+				residuals.append(self.graph.adj[self.graph.vertices[path[i]]][self.graph.vertices[path[i+1]]] - self.flow[self.graph.vertices[path[i]]][self.graph.vertices[path[i+1]]])
+			
+			flow = min(residuals)
+			
+			for i in range(len(path)-1):
+				self.flow[self.graph.vertices[path[i]]][self.graph.vertices[path[i+1]]] += flow
+				self.flow[self.graph.vertices[path[i+1]]][self.graph.vertices[path[i]]] -= flow
+			
+			path = self.aug_path(self.s, [self.s])
+		
+		cut_s = set()
+		queue = [self.s]
+		while len(queue) > 0:
+			
+			cur = queue.pop()
+			cut_s.add(cur)
+			
+			for vert in self.graph.vertices.keys():
+				if vert not in cut_s and vert not in queue and self.graph.adj[self.graph.vertices[cur]][self.graph.vertices[vert]] > self.flow[self.graph.vertices[cur]][self.graph.vertices[vert]]:
+					queue.append(vert)
+		
+		cut_t = self.graph.complement(cut_s)
+		
+		return (sum(self.flow[self.graph.vertices[self.s]]), (cut_s, cut_t))
+			
+			
+		
+		
+			
+					
 	
 	

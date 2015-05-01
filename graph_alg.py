@@ -5,16 +5,24 @@ from graph import *
 def density(g, verts):
 	pass
 
+
 # Finds the maximum density subgraph using Goldberg's algorithm
 def max_density_subgraph(g):
 	pass
+
 
 # Prunes a graph based on local densities and returns a list of subgraphs
 def prune_dense_graph(g):
 	return []
 
+
+def min_cut_dir(g):
+	pass
+	
+
+
 # Returns graph with vert1 and vert2 contracted into a single vertex
-def contract(g, vert1, vert2) :
+def contract(g, vert1, vert2):
 	
 	# Create the new contracted vertex
 	new_vertex = Vertex(vert1.neighbors)
@@ -63,56 +71,92 @@ def contract(g, vert1, vert2) :
 	return Graph(new_verts.keys())
 
 
-def connectedness(vertlist, vert1):
-	sum = 0
-	for vert in vertlist.neighbors.keys():
-		if vert1 in vert.neighbors:
-			sum = sum + vert.neighbors[vert1]
-	return sum
+# measures the connectedness of vert1 to the given set of vertices
+def connectedness(vert_set, vert1):
+	
+	tot = 0
+	
+	for vert in vert_set:
+		if vert.is_neighbor(vert1):
+			tot += vert.neighbors[vert1]
+	
+	return tot
 
-def complement (g, A):
-	returnlist = {}
+
+# returns the complement of the set of vertices A in the graph g's vertices
+def complement(g, A):
+	
+	comp = set()
+	
 	for vert in g.vertices:
-		if not(vert in A):
-			returnlist[vert] = 0
-	return returnlist
+		if vert not in A:
+			comp.add(vert)
+	
+	return comp
 
 
-def min_cut_phase (g, a):
-	A = a
+# returns the vertex in A complement that is most tightly connected to A
+def most_tightly_connected(g, A):
+	
+	max_vert = (None, 0)
+	
+	for x in g.complement(A):
+		c = connectedness(A, x)
+		if c > max_vert[1]:
+			max_vert = (x, c)
+	
+	return max_vert[0]
+
+
+# returns the cut of the phase and the contracted graph
+def min_cut_phase(g, a):
+	
+	A = set([a])
+	
 	while len(A) != len(g.vertices):
-		maxvert = g.vertices.keys()[0]
-		maxval = 0
-		for x in g.vertices.keys():
-			if x not in A and connectedness(A, x) > maxval:
-				maxvert = x
-				maxval = connectedness(A,x)
+		
+		x = most_tightly_connected(g, A)
+		
 		if len(A) == len(g.vertices) - 2:
-			vert1 = x
+			s = x
+		
 		if len(A) == len(g.vertices) - 1:
-			vert2 = x
-			cutphase = (A, complement(g, A))
-		A[x] = 0
-	newgraph = contract(g, vert1, vert2)
-	return (cutphase, newgraph)
+			t = x
+			cut_phase = (A, g.complement(A))
+		
+		A.add(x)
+	
+	new_graph = contract(g, s, t)
+	return (cut_phase, new_graph)
 
-def weight_cut (g, cutphase):
-	(A, Aprime) = cutphase
-	sum = 0
-	for x in A:
-		sum = sum + connectedness(x, Aprime)
-	return sum
 
-def min_cut (g, a):
-	A = a
-	while len(g.vertices) > 1:
-		(cutphase, newgraph) = min_cut_phase(g, a)
-		mincut = None
-		minval = float("inf")
-		if weight_cut(cutphase) < minval:
-			mincut = cutphase
-			minval = weight_cut(cutphase)
-	return mincut
+# calculates the weight of a cut
+def weight_cut(g, cut):
+
+	tot = 0
+
+	for x in cut[0]:
+		for (y, weight) in x.neighbors:
+			if y in cut[1]:
+				tot = tot + weight
+	
+	return tot
+
+
+# Stoer-Wagner algorithm to find the minimum cut in an undirected graph
+def min_cut_undir(g, a):
+	
+	new_graph = g
+	min_cut = (None, float("inf"))
+
+	while len(new_graph.vertices) > 1:
+		
+		(cut_phase, new_graph) = min_cut_phase(new_graph, a)
+				
+		if weight_cut(cut_phase) < min_cut[1]:
+			min_cut = (cut_phase, weight_cut(cut_phase))
+	
+	return min_cut[0]
 
 
 	
